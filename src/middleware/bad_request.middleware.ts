@@ -2,6 +2,9 @@ import {
   Middleware,
   ExpressErrorMiddlewareInterface,
   BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  MethodNotAllowedError,
 } from 'routing-controllers';
 import { ValidationError } from 'class-validator';
 import express from 'express';
@@ -11,9 +14,9 @@ import { RequestFormError } from '../model/error/request-form.error';
 @Middleware({ type: 'after' })
 export class BadRequestMiddleware implements ExpressErrorMiddlewareInterface {
   error(
-    error: any | BadRequestError,
-    request: any,
-    response: any | express.Response,
+    error: any,
+    request: express.Request,
+    response: express.Response,
     next: (err?: any) => any
   ): void {
     if (error instanceof BadRequestError && (<RequestFormError>error).errors) {
@@ -26,10 +29,58 @@ export class BadRequestMiddleware implements ExpressErrorMiddlewareInterface {
       return;
     }
 
-    console.log('got here for real');
+    if (error instanceof UnauthorizedError) {
+      response.status(error.httpCode).send(
+        createResponse(
+          {
+            message: 'Login Required',
+          },
+          ResponseTypes.ACCESS_DENIED
+        )
+      );
+      return;
+    }
 
-    console.log('hello world', typeof error, 'error');
-    next();
+    if (error instanceof ForbiddenError) {
+      response.status(error.httpCode).send(
+        createResponse(
+          {
+            message: 'You are not allowed to view this page.',
+          },
+          ResponseTypes.ACCESS_DENIED
+        )
+      );
+      return;
+    }
+
+    if (error instanceof MethodNotAllowedError) {
+      response.status(error.httpCode).send(
+        createResponse(
+          {
+            method: request.method,
+            url: request.url,
+            message: 'The Http Method does not exist on this url',
+          },
+          ResponseTypes.NOT_FOUND
+        )
+      );
+      return;
+    }
+
+    const bugId = `BUG-${new Date().getTime()}-${Math.floor(
+      Math.random() * 50000
+    )}`;
+
+    console.error(...error);
+    response.status(error.httpCode).send(
+      createResponse(
+        {
+          bugId,
+          supportEmail: process.env.EMAIL,
+        },
+        ResponseTypes.ERROR_500
+      )
+    );
   }
 }
 

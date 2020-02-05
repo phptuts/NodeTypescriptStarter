@@ -8,6 +8,7 @@ export enum ResponseTypes {
 	ACCESS_DENIED = 'access_denied',
 	AUTH_TOKEN = 'auth_token',
 	BAD_REQUEST = 'bad_request',
+	ERROR_500 = 'ERROR_500',
 	REGISTER_USER = 'register_user'
 }
 

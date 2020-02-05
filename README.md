@@ -4,47 +4,46 @@
 
 Run
 
+```bash
+docker-compose up --build --force-recreate
 ```
-sh run.sh
-```
 
-## Password Information
+## Setup
 
-Look in the docker-compose.yml file to find all the mysql password info.  Because I am using mysql version 8 you have to use the mysql workbench and will not be able to use sqlpro.
+1. copy .env-template and replace it with your own variables
 
-## Debug VS Code
+2. Go to the run_node.sh and change the file to text below.
 
-1. Go to the run_node.sh and change the file to text below.
-
-```
+```bash
 npm run dev:debug
 ```
 
-2. Run command below
+3. Run command below
 
-```
+```bash
 sh run.sh
 ```
 
-3. Open chrome://inspect
+4. Open chrome://inspect
 
-4. Under Remote Target click inspect
+5. Under Remote Target click inspect
 
-5. Attach debugger in vs code
+6. Attach debugger in vs code
 
-6. Click on the debug icon
+7. Click on the debug icon
 
-7. Click the play button and attached debugger
+8. Click the play button and attached debugger
 
 ## Examples
 
-This is validating objects with nested and array nested properties.  Not that the 
+This is validating objects with nested and array nested properties. Not that the
 @Type is required and @ValidatedNested is required as well
 
 Not this is with defaultErrorHandler turned off and I created some custom middleware to process the errors.
 
 Classes
-```
+
+```typescript
 import {
   IsEmail,
   Length,
@@ -93,9 +92,9 @@ export class LoginModel {
 }
 ```
 
-JSON 
+JSON
 
-```
+```json
 {
     "email": "fake@gmail.com",
     "password": "3333333",
@@ -126,7 +125,8 @@ JSON
 ```
 
 Response JSON
-```
+
+```json
 {
     "meta": {
         "type": "form_errors"
@@ -173,11 +173,11 @@ Response JSON
 
 ## Example Always Use Expose
 
-Note that in start.ts excludeExtraneousValues is set to true.  This cleans out bad values and makes everything more secure.
+Note that in start.ts excludeExtraneousValues is set to true. This cleans out bad values and makes everything more secure.
 
-```
+```typescript
 export class LoginModel {
-  
+
   @IsEmail()
   @Expose()
   public email: string;
@@ -191,17 +191,17 @@ export class LoginModel {
 
 Example JSON Request
 
-```
+```json
 {
     "email": "fake@gmail.com",
     "password": "3333333",
     "crap": 3333
 }
-```
+```json
 
 Example Transformed Response
 
-```
+```json
 {
     "email": "fake@gmail.com",
     "password": "3333333"

@@ -7,6 +7,7 @@ import dotevn from 'dotenv';
 import { TokenController } from './controller/token.controller';
 import { createExpressServer } from 'routing-controllers';
 import { BadRequestMiddleware } from './middleware/bad_request.middleware';
+import { NotFoundRequestMiddleWare } from './middleware/not_found_request.middleware';
 
 dotevn.config();
 
@@ -22,7 +23,7 @@ const start = async () => {
     await connectdb();
     const app = createExpressServer({
       controllers: [TokenController], // we specify controllers we want to use
-      middlewares: [BadRequestMiddleware],
+      middlewares: [BadRequestMiddleware, NotFoundRequestMiddleWare],
       defaultErrorHandler: false,
       validation: {
         skipMissingProperties: false,
